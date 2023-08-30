@@ -54,12 +54,16 @@ const UserSchema = new mongoose.Schema(
 		location: {
 			type: String,
 			trim: true,
+			default: "",
 		},
 
-		birthDate: Date,
+		birthDate: {
+			type: Date,
+			default: "",
+		},
 	},
 	{ timestamps: true }
 );
 
-const User = mongoose.model("User", UserSchema);
+const User = mongoose.model("User", UserSchema, "users");
 export default User;

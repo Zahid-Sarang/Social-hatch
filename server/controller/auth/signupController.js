@@ -8,29 +8,61 @@
 // [.] send response
 
 /* IMPORTS */
-import Joi from "joi";
+import CustomErrorHandler from "../../service/CustomeErrorHandle.js";
+import signupSchema from "./joi/signUpSchema.js";
+import { User } from "../../models/index.js";
+import bcrypt from "bcrypt";
+import JwtService from "../../service/JwtService.js";
 
 /* SIGNUP CONTROLLER */
 const signupController = {
 	async signUp(req, res, next) {
-		//=========================================================================================
-		//                    Request Validation
-		//==========================================================================================
-		const signupSchema = Joi.object({
-			firstName: Joi.string().min(2).max(50).required(),
-			lastName: Joi.string().min(2).max(50).required(),
-			userName: Joi.string().min(2).max(50).required(),
-			email: Joi.string().email().required(),
-			password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
-			confrim_password: Joi.ref("password"),
-		});
+		const { firstName, lastName, userName, email, password } = req.body;
 
+		// validate signUp schema
 		const { error } = signupSchema.validate(req.body);
 		if (error) {
 			return next(error);
 		}
-		res.json({message:"Hello"})
-		//============================================================================================
+
+		// check if the user is in the database already
+		try {
+			const exist = await User.exists({
+				$or: [{ email: email }, { userName: userName }],
+			});
+			if (exist) {
+				return next(
+					CustomErrorHandler.alreadyExists("Email or Username already exists")
+				);
+			}
+		} catch (err) {
+			return next(err);
+		}
+
+		// Hash password
+		const hashedPassword = await bcrypt.hash(password, 10);
+
+		// =================================== prepare the model and save in database ================================================= //
+		const user = new User({
+			firstName,
+			lastName,
+			userName,
+			email,
+			password: hashedPassword,
+		});
+		let access_token;
+		try {
+			const result = await user.save();
+			// Token generate
+			access_token = JwtService.sign({
+				_id: result._id,
+				userName: result.userName,
+			});
+		} catch (err) {
+			return next(err);
+		}
+		// ======================================================================================================== //
+		res.json({ access_token: access_token });
 	},
 };
 export default signupController;

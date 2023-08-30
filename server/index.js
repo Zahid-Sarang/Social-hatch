@@ -33,7 +33,7 @@ db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => console.log("Connected to DB"));
 
 /* Custome Middleware */
-app.use(errorHandler)
+app.use(errorHandler);
 
 /* SERVER PORT */
 app.listen(APP_PORT, () => console.log(`Listening on port ${APP_PORT}`));
