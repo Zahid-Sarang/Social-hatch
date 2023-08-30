@@ -27,12 +27,16 @@ const signupController = {
 
 		// check if the user is in the database already
 		try {
-			const exist = await User.exists({
-				$or: [{ email: email }, { userName: userName }],
-			});
-			if (exist) {
+			const existEmail = await User.exists({ email: email });
+			if (existEmail) {
 				return next(
-					CustomErrorHandler.alreadyExists("Email or Username already exists")
+					CustomErrorHandler.alreadyExists("This Email is Already Exists")
+				);
+			}
+			const existUserName = await User.exists({ userName: userName });
+			if (existUserName) {
+				return next(
+					CustomErrorHandler.alreadyExists("This User is Already Exists")
 				);
 			}
 		} catch (err) {
