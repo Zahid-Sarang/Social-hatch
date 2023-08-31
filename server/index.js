@@ -5,6 +5,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
+import routes from "./routes/index.js";
+import { APP_PORT, MONGO_URL } from "./config/index.js";
+import errorHandler from "./middlewares/erroHandler.js";
 
 /* CONFIGURATION */
 dotenv.config();
@@ -18,10 +21,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 /* ROUTES */
+app.use("/api", routes);
 
 /* MONGOOSE SETUP */
-const PORT = process.env.PORT || 9000;
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(MONGO_URL, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => console.log("Connected to DB"));
+
+/* Custome Middleware */
+app.use(errorHandler);
+
+/* SERVER PORT */
+app.listen(APP_PORT, () => console.log(`Listening on port ${APP_PORT}`));

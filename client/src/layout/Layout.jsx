@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import HomePage from "../pages/home/HomePage";
+// import HomePage from "../pages/home/HomePage";
 import SideBar from "./SideBar";
 
 const Layout = () => {
