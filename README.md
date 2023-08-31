@@ -2,7 +2,16 @@
 
 ![Project Image](/path/to/your/project/image.png)
 
-Welcome to our MERN-based social media platform. Dive into a world of connections, posts, stories, and more!
+## 🌐 Description:
+#### SocialHatch is a modern social media web application built on the robust MERN stack (MongoDB, Express.js, React.js, Node.js). Designed with performance, scalability, and user experience in mind, our platform offers a seamless and intuitive environment for users to connect, share, and interact.
+
+## Tech Stack 🛠️
+
+- ![MongoDB](https://img.shields.io/badge/-MongoDB-black?style=flat-square&logo=mongodb) 
+- ![Express.js](https://img.shields.io/badge/Express.js-404D59?style=flat-squa) 
+- ![React](https://img.shields.io/badge/-React-black?style=flat-square&logo=react) 
+- ![Node.js](https://img.shields.io/badge/-Node.js-black?style=flat-square&logo=Node.js) 
+- ![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-black?style=flat-square&logo=tailwind-css) 
 
 ## Features ✨
 
