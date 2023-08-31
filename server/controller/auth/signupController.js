@@ -9,7 +9,7 @@
 
 /* IMPORTS */
 import CustomErrorHandler from "../../service/CustomeErrorHandle.js";
-import signupSchema from "./joi/signUpSchema.js";
+import {signUpSchema} from "../../joi/index.js";
 import { User } from "../../models/index.js";
 import bcrypt from "bcrypt";
 import JwtService from "../../service/JwtService.js";
@@ -20,7 +20,7 @@ const signupController = {
 		const { firstName, lastName, userName, email, password } = req.body;
 
 		// validate signUp schema
-		const { error } = signupSchema.validate(req.body);
+		const { error } = signUpSchema.validate(req.body);
 		if (error) {
 			return next(error);
 		}
@@ -60,7 +60,7 @@ const signupController = {
 			// Token generate
 			access_token = JwtService.sign({
 				_id: result._id,
-				userName: result.userName,
+				email: result.email,
 			});
 		} catch (err) {
 			return next(err);
