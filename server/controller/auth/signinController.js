@@ -12,6 +12,7 @@ import CustomErrorHandler from "../../service/CustomeErrorHandle.js";
 import bcrypt from "bcrypt";
 import JwtService from "../../service/JwtService.js";
 import { REFRESH_SECRET } from "../../config/index.js";
+import Joi from 'joi'
 /* SIGNIN CONTROLLER */
 const signinController = {
 	//================================================================ Login ====================================================//
@@ -65,21 +66,21 @@ const signinController = {
 	async logout(req, res, next) {
 		// validation
 		const refreshSchema = Joi.object({
-			refresh_token: Joi.string().required(),
+		  refresh_token: Joi.string().required(),
 		});
 		const { error } = refreshSchema.validate(req.body);
-
+	
 		if (error) {
-			return next(error);
+		  return next(error);
 		}
-
+	
 		try {
-			await RefreshToken.deleteOne({ token: req.body.refresh_token });
+		  await RefreshToken.deleteOne({ token: req.body.refresh_token });
 		} catch (err) {
-			return next(new Error("Something went wrong in the database"));
+		  return next(new Error("Something went wrong in the database"));
 		}
 		res.json({ status: 1 });
-	},
+	  },
 	//================================================================ Logout End ====================================================//
 };
 

@@ -48,10 +48,10 @@ const refreshTokenController = {
 			// generate tokens
 			const access_token = JwtService.sign({
 				_id: user._id,
-				role: user.role,
+				email: user.email,
 			});
 			const refresh_token = JwtService.sign(
-				{ _id: user._id, role: user.role },
+				{ _id: user._id, email: user.email },
 				"1y",
 				REFRESH_SECRET
 			);
