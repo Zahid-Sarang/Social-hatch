@@ -32,7 +32,6 @@ const signupSchema = Joi.object({
 		.min(6)
 		.required()
 		.messages({
-			"string.pattern.base": `Password must contain only alpha-numeric characters and have a length between 3 to 30`,
 			"string.empty": `Password cannot be an empty field`,
 			"any.required": `Password is required`,
 			"string.min": `Password should have a minimum length of {#limit}`,

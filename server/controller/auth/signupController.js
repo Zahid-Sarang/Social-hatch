@@ -9,10 +9,11 @@
 
 /* IMPORTS */
 import CustomErrorHandler from "../../service/CustomeErrorHandle.js";
-import {signUpSchema} from "../../joi/index.js";
-import { User } from "../../models/index.js";
+import { signUpSchema } from "../../joi/index.js";
+import { RefreshToken, User } from "../../models/index.js";
 import bcrypt from "bcrypt";
 import JwtService from "../../service/JwtService.js";
+import { REFRESH_SECRET } from "../../config/index.js";
 
 /* SIGNUP CONTROLLER */
 const signupController = {
@@ -55,18 +56,30 @@ const signupController = {
 			password: hashedPassword,
 		});
 		let access_token;
+		let refresh_token;
 		try {
 			const result = await user.save();
-			// Token generate
+			// generate jwt token
 			access_token = JwtService.sign({
 				_id: result._id,
 				email: result.email,
 			});
+			refresh_token = JwtService.sign(
+				{
+					_id: result._id,
+					email: result.email,
+				},
+				"1y",
+				REFRESH_SECRET
+			);
+
+			// database whiteList
+			await RefreshToken.create({ token: refresh_token });
 		} catch (err) {
 			return next(err);
 		}
 		// ======================================================================================================== //
-		res.json({ access_token: access_token });
+		res.json({ access_token, refresh_token });
 	},
 };
 export default signupController;
