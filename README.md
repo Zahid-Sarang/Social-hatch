@@ -52,7 +52,7 @@
 ## Installation 🔧
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Zahid-Sarang/Social-hatch
 cd server
 npm install
 cd client
