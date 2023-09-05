@@ -1,4 +1,5 @@
 import React from "react";
+
 /* REACT ROUTER IMPORT */
 import { Link } from "react-router-dom";
 
@@ -147,7 +148,11 @@ const SignUp = () => {
 						Password
 					</label>
 					<input
-						{...register("password", { required: "Password is required" })}
+						{...register("password", { required: "Password is required", pattern: {
+							value:
+							  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
+							message: "password must be at least 8 characters long",
+						  }, })}
 						className="w-full px-3 py-2 leading-tight rounded shadow appearance-none bg-follow-btn text-primary focus:outline-none focus:shadow-outline"
 						id="password"
 						type="password"

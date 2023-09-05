@@ -12,7 +12,7 @@ import CustomErrorHandler from "../../service/CustomeErrorHandle.js";
 import bcrypt from "bcrypt";
 import JwtService from "../../service/JwtService.js";
 import { REFRESH_SECRET } from "../../config/index.js";
-import Joi from 'joi'
+import Joi from "joi";
 /* SIGNIN CONTROLLER */
 const signinController = {
 	//================================================================ Login ====================================================//
@@ -26,8 +26,9 @@ const signinController = {
 		}
 
 		// check user exist in database or not
+		let user;
 		try {
-			const user = await User.findOne({ email: email });
+			user = await User.findOne({ email: email });
 			if (!user) {
 				return next(CustomErrorHandler.wrongCredentials());
 			}
@@ -55,7 +56,18 @@ const signinController = {
 			// database whiteList
 			await RefreshToken.create({ token: refresh_token });
 
-			res.json({ access_token, refresh_token });
+			// pass http only cookies
+			res.cookie("access_token", access_token, {
+				maxAge: 1000 * 60 * 60 * 24 * 30,
+				httpOnly: true,
+			});
+
+			res.cookie("refresh_token", refresh_token, {
+				maxAge: 1000 * 60 * 60 * 24 * 30,
+				httpOnly: true,
+			});
+
+			res.json({ access_token, refresh_token, user });
 		} catch (error) {
 			return next(error);
 		}
@@ -66,21 +78,21 @@ const signinController = {
 	async logout(req, res, next) {
 		// validation
 		const refreshSchema = Joi.object({
-		  refresh_token: Joi.string().required(),
+			refresh_token: Joi.string().required(),
 		});
 		const { error } = refreshSchema.validate(req.body);
-	
+
 		if (error) {
-		  return next(error);
+			return next(error);
 		}
-	
+
 		try {
-		  await RefreshToken.deleteOne({ token: req.body.refresh_token });
+			await RefreshToken.deleteOne({ token: req.body.refresh_token });
 		} catch (err) {
-		  return next(new Error("Something went wrong in the database"));
+			return next(new Error("Something went wrong in the database"));
 		}
 		res.json({ status: 1 });
-	  },
+	},
 	//================================================================ Logout End ====================================================//
 };
 

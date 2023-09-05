@@ -11,3 +11,4 @@ const api = axios.create({
 
 // List of All the Endpoints
 export const register = (data) => api.post("/api/signup", data);
+export const login = (data) => api.post("/api/signin", data);
