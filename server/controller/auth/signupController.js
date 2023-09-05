@@ -78,8 +78,12 @@ const signupController = {
 		} catch (err) {
 			return next(err);
 		}
+		res.cookie("accessToken", access_token, {
+			maxAge: 1000 * 60 * 60 * 24 * 30,
+			httpOnly: true,
+		});
 		// ======================================================================================================== //
-		res.json({ access_token, refresh_token });
+		res.json({user});
 	},
 };
 export default signupController;
