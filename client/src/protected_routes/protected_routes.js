@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const isAuth = true; // Assuming you're getting this value from a state or a context
+
 // if user is not authenticated redirect to the login page
 export function ProtectedRoute({ component: Component, ...rest }) {
+	const { isAuth } = useSelector((state) => state.auth);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -17,6 +19,7 @@ export function ProtectedRoute({ component: Component, ...rest }) {
 
 // if user is authenticated redirect to home page
 export function AuthRedirect({ component: Component, ...rest }) {
+	const { isAuth } = useSelector((state) => state.auth);
 	const navigate = useNavigate();
 
 	useEffect(() => {

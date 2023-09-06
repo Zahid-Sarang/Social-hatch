@@ -9,8 +9,10 @@ import {
 	ProtectedRoute,
 	AuthRedirect,
 } from "./protected_routes/protected_routes";
+import { useLoadingWithRefresh } from "./hooks/useLoadingWithRefresh";
 function App() {
-	return (
+	const {loading} = useLoadingWithRefresh();
+	return loading ? (<p>Loading....</p>) : (
 		
 			<BrowserRouter>
 				<Routes>

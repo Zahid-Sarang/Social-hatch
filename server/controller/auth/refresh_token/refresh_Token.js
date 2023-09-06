@@ -8,11 +8,13 @@ import JwtService from "../../../service/JwtService.js";
 /* REFRESH_TOKEN CONTROLLER */
 const refreshTokenController = {
 	async refresh_token(req, res, next) {
+		const { refresh_token: refreshTokenFromCookie } = req.cookies;
+		console.log("rokens",refreshTokenFromCookie);
 		//  Request validation
 		const refreshSchema = Joi.object({
 			refresh_token: Joi.string().required(),
 		});
-		const { error } = refreshSchema.validate(req.body);
+		const { error } = refreshSchema.validate(refreshTokenFromCookie);
 		if (error) {
 			return next(error);
 		}
@@ -21,7 +23,7 @@ const refreshTokenController = {
 		let refreshToken;
 		try {
 			refreshToken = await RefreshToken.findOne({
-				token: req.body.refresh_token,
+				token: refreshTokenFromCookie,
 			});
 			if (!refreshToken) {
 				return next(CustomErrorHandler.unAuthorized("Invalid refresh token"));
@@ -29,6 +31,7 @@ const refreshTokenController = {
 
 			// verify the refresh token
 			let userId;
+			let user;
 			try {
 				const { _id } = await JwtService.verify(
 					refreshToken.token,
@@ -40,7 +43,7 @@ const refreshTokenController = {
 			}
 
 			// check user exist or not
-			const user = await User.findOne({ _id: userId });
+			user = await User.findOne({ _id: userId });
 			if (!user) {
 				return next(CustomErrorHandler.unAuthorized("No user found!"));
 			}
@@ -58,11 +61,21 @@ const refreshTokenController = {
 
 			// database whitelist
 			await RefreshToken.create({ token: refresh_token });
-			res.json({ access_token, refresh_token });
+
+			// put in cookie
+			res.cookie("refreshToken", refresh_token, {
+				maxAge: 1000 * 60 * 60 * 24 * 30,
+				httpOnly: true,
+			});
+
+			res.cookie("accessToken", access_token, {
+				maxAge: 1000 * 60 * 60 * 24 * 30,
+				httpOnly: true,
+			});
+			res.json({ user });
 		} catch (err) {
 			return next(new Error("refresh token validation failed" + err.message));
 		}
-		
 	},
 };
 

@@ -54,7 +54,13 @@ const signinController = {
 			);
 
 			// database whiteList
-			await RefreshToken.create({ token: refresh_token });
+			try {
+				await RefreshToken.create({ token: refresh_token });
+			} catch (dbError) {
+				console.error("Database error:", dbError);
+				return next(dbError);  // Send the error to your error handling middleware or handle it accordingly.
+			}
+			
 
 			// pass http only cookies
 			res.cookie("access_token", access_token, {
@@ -67,7 +73,7 @@ const signinController = {
 				httpOnly: true,
 			});
 
-			res.json({ access_token, refresh_token, user });
+			res.json({user });
 		} catch (error) {
 			return next(error);
 		}
