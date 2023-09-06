@@ -1,0 +1,6 @@
+post fields 
+* userId
+* description
+* image
+* likes
+* comments

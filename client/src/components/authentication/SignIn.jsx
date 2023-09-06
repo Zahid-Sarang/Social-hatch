@@ -1,7 +1,7 @@
 import React from "react";
 
 /* REACT ROUTER IMPORT */
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 /* API IMPORTS */
 import { login } from "../../http/api";
@@ -10,8 +10,14 @@ import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+/* REDUX & STATE IMPORTS */
+import { useDispatch } from "react-redux";
+import {setAuth} from "../../store/authSlice"
+
 /*COMPONENT */
 const SignIn = () => {
+	const Navigate = useNavigate();
+	const dispatch = useDispatch();
 	const {
 		register,
 		handleSubmit,
@@ -24,14 +30,20 @@ const SignIn = () => {
 		try {
 			const { data } = await login(userdata);
 			// TODO: store user info in redux state
-			console.log("Submitted Data:");
-			console.log(data);
-
-			// Reset the form fields after a successful submission:
-			reset();
-
-			// Display success message:
-			toast.success("Login Successful!");
+			if(data){
+				dispatch(setAuth(data))
+				
+			}
+				console.log("Submitted Data:");
+				console.log(data);
+				
+				// Reset the form fields after a successful submission:
+				reset();
+				
+				// Display success message:
+				toast.success("Login Successful!");
+				Navigate("/home");
+			
 		} catch (apiError) {
 			// If the error response has a message, display it. Otherwise, show a generic error.
 			console.log(apiError);
