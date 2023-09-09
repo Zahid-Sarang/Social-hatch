@@ -62,7 +62,7 @@ npm install
 ## Usage 🚀
 
 ### To start the server:
-``` cd server npm start ```
+``` cd server nodemon index.js ```
 
 ### To start the client:
 ```cd client && npm start ```
